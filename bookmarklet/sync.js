@@ -48,6 +48,26 @@
     window.__shysafariSync.togglePanel();
     return;
   }
+  // jsDelivr lets browsers keep this file for a week, so the copy the bookmark just loaded may be
+  // old. Ask for the current one (revalidating the cached copy too) and run that instead; if that
+  // fails, run the cached copy.
+  const self = document.currentScript && document.currentScript.src;
+  if (self && !config.fresh) {
+    config.fresh = true;
+    // Holds the place so a second click meanwhile doesn't start another copy.
+    window.__shysafariSync = { togglePanel() {} };
+    const run = (code) => {
+      delete window.__shysafariSync;
+      const script = document.createElement('script');
+      if (code) script.textContent = code;
+      else script.src = self;
+      document.documentElement.appendChild(script);
+    };
+    fetch(self, { cache: 'no-cache' })
+      .then((response) => (response.ok ? response.text() : Promise.reject()))
+      .then(run, () => run());
+    return;
+  }
   if (!config.url || !config.key) {
     alert('這個書籤缺少試算表網址或同步碼，請到試算表重新建立書籤。');
     return;
