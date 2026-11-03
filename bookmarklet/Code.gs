@@ -179,13 +179,10 @@ function onOpen() {
   backupSheet();
 }
 
+// The URL field starts empty on purpose: ScriptApp.getService().getUrl() can return a
+// URL that answers 404 to the bookmark, so the teacher pastes the one the deploy dialog showed.
 function showBookmarkDialog() {
-  const serviceUrl = ScriptApp.getService().getUrl() || '';
-  const data = JSON.stringify({
-    key: getSyncKey(),
-    loader: LOADER_URL,
-    url: /\/exec$/.test(serviceUrl) ? serviceUrl : '',
-  }).replace(/</g, '\\u003c');
+  const data = JSON.stringify({ key: getSyncKey(), loader: LOADER_URL }).replace(/</g, '\\u003c');
   const html = `
 <style>
   body { font: 14px/1.6 system-ui, "Microsoft JhengHei", sans-serif; color: #222; margin: 0; }
@@ -198,7 +195,7 @@ function showBookmarkDialog() {
   button { font: inherit; padding: 4px 12px; }
 </style>
 <div class="step">
-  <label for="url">1. 貼上「網頁應用程式」網址（結尾是 /exec）</label>
+  <label for="url">1. 貼上部署時複製的「網頁應用程式」網址（結尾是 /exec）</label>
   <input id="url" placeholder="https://script.google.com/macros/s/.../exec">
 </div>
 <div class="step">
@@ -216,7 +213,6 @@ function showBookmarkDialog() {
   const data = ${data};
   const input = document.getElementById('url');
   const link = document.getElementById('bookmark');
-  input.value = data.url;
   function update() {
     const url = input.value.trim();
     const ok = /^https:\\/\\/script\\.google\\.com\\/.+\\/exec$/.test(url);
