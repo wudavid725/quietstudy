@@ -1,0 +1,14 @@
+{
+  "version": "1.2.0",
+  "files": {
+    "README.md": "8a66f5bb7219658a967356fd54207e90bff2aacf159c4ecfebe31d9667720dde",
+    "background.js": "51aefaf7eb7bff3a0281b1657dbfcbad7bfd853aba5cc4af76648f62c08f3466",
+    "backup-store.js": "11f8ca823f26bd9d635ddd20b471cb5374c75642ca2ebd21fb6952b942541f65",
+    "backups.html": "9e367ae244ece41511a9b935d4532fb7208762deb94aa890469de86d5407ed27",
+    "backups.js": "31a3b0920d0a73c143f3b54c808062ef6613dc2959e6049a3c8da094bd67e80b",
+    "content.js": "35067e22d54bd552574f603314ee4a2beb09dd2a6064b02055a788b8c4d45891",
+    "manifest.json": "0ae6a345d4335f27087603b72b0739f0ddba992e7730fb294ba92d18f1704328",
+    "popup.html": "f1425bb8ab125529f60391d97d651874d2a9f1ade205b92ea61d968e9725c3be",
+    "popup.js": "8d441fcc7820f6d9de052eed62b2fba2f8459e9ce8a3874ff7d1cff9d4f52872"
+  }
+}

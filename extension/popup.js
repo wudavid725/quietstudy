@@ -31,7 +31,7 @@ function showWarnings(list) {
 }
 
 async function render() {
-  const local = await chrome.storage.local.get(['lastSyncedAt', 'error', 'errorMessage', 'backups']);
+  const local = await chrome.storage.local.get(['lastSyncedAt', 'error', 'errorMessage', 'backups', 'pendingUpdate']);
   const { meta } = await chrome.storage.sync.get('meta');
   const used = await chrome.storage.sync.getBytesInUse(null);
   const quota = chrome.storage.sync.QUOTA_BYTES;
@@ -41,6 +41,10 @@ async function render() {
   document.getElementById('remote').textContent = formatTime(meta && meta.updatedAt);
   document.getElementById('usage').textContent = (used / 1024).toFixed(1) + ' KB / ' + (quota / 1024).toFixed(0) + ' KB';
   document.getElementById('backups').textContent = (local.backups || []).length + ' 份（存在這台電腦）';
+  document.getElementById('version').textContent = chrome.runtime.getManifest().version;
+  const update = document.getElementById('update');
+  update.hidden = !local.pendingUpdate;
+  update.textContent = '新版本 ' + local.pendingUpdate + ' 已下載，關掉 Shy Safari 分頁後會自動更新。';
 
   const warnings = [];
   if (!email) warnings.push('Chrome 沒有登入 Google 帳號，紀錄只存在這台電腦，不會同步到其他電腦。');
