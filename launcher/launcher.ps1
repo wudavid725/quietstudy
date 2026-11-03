@@ -3,7 +3,8 @@
 # Shy Safari's own data) lives there. Before opening, the latest extension is fetched
 # from GitHub; when that fails (offline, blocked), the copy already here is used.
 param(
-  [string]$Source = 'https://github.com/wudavid725/quietstudy/archive/refs/heads/main.zip',
+  # GitHub's archive host directly; the github.com/.../archive URL only redirects here.
+  [string]$Source = 'https://codeload.github.com/wudavid725/quietstudy/zip/refs/heads/main',
   # Extra browser flags, only needed for testing.
   [string[]]$BrowserArgs = @()
 )
