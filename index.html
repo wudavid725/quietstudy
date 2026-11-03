@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shy Safari 備份工具</title>
+<style>
+  :root { --bg: #f6f7fb; --card: #fff; --text: #222; --muted: #666; --accent: #2f6fd6; --accent2: #2e9b62; --border: #dde1ea; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16181d; --card: #20232b; --text: #eceef3; --muted: #a3a8b5; --border: #333845; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.7 system-ui, "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 19px; margin: 0 0 8px; }
+  p.lead { color: var(--muted); margin: 0 0 24px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .bookmarklets { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+  .bookmarklets a { display: inline-block; padding: 10px 18px; border-radius: 10px; color: #fff; text-decoration: none; font-weight: 600; cursor: grab; }
+  .bm-export { background: var(--accent); }
+  .bm-import { background: var(--accent2); }
+  ol { padding-left: 22px; margin: 8px 0; }
+  .note { color: var(--muted); font-size: 14px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  code { background: var(--bg); padding: 1px 6px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Shy Safari 備份工具</h1>
+  <p class="lead">Shy Safari 的設定和紀錄只存在每台裝置的瀏覽器裡。用這兩個書籤，把資料從一台裝置搬到另一台。</p>
+
+  <section>
+    <h2>第一步：安裝書籤（每台裝置做一次）</h2>
+    <p>把下面兩個按鈕<b>拖曳到瀏覽器的書籤列</b>。看不到書籤列的話，按 <code>Ctrl + Shift + B</code>（Mac 是 <code>⌘ + Shift + B</code>）打開。</p>
+    <div class="bookmarklets">
+      <a class="bm-export" id="bm-export" href="#">📤 匯出 Shy Safari</a>
+      <a class="bm-import" id="bm-import" href="#">📥 匯入 Shy Safari</a>
+    </div>
+    <p class="note">直接點這兩個按鈕不會有作用，要拖到書籤列，之後在 Shy Safari 網站上按。</p>
+  </section>
+
+  <section>
+    <h2>第二步：在舊裝置匯出</h2>
+    <ol>
+      <li>打開 <a href="https://www.shysafari.com/" target="_blank" rel="noopener">www.shysafari.com</a>。</li>
+      <li>按書籤列上的「📤 匯出 Shy Safari」。</li>
+      <li>會下載一個 <code>shysafari-backup-日期.json</code> 備份檔，內容也會同時複製到剪貼簿。</li>
+      <li>把備份檔傳到新裝置，例如寄給自己、存到 Google 雲端硬碟或 LINE 傳給自己。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>第三步：在新裝置匯入</h2>
+    <ol>
+      <li>在新裝置打開 <a href="https://www.shysafari.com/" target="_blank" rel="noopener">www.shysafari.com</a>。</li>
+      <li>按書籤列上的「📥 匯入 Shy Safari」。</li>
+      <li>選擇備份檔，或把匯出的文字貼進方框，按「匯入」。</li>
+      <li>頁面會重新整理，設定和紀錄就回來了。</li>
+    </ol>
+    <p class="note">匯入會覆蓋新裝置上原本的 Shy Safari 資料。這不是自動同步，每次換裝置前都要先在原本那台匯出最新的一份。</p>
+  </section>
+
+  <section>
+    <h2>手機或平板無法拖曳時</h2>
+    <p>先隨便把這一頁加入書籤，再編輯那個書籤，把網址整個換成下面複製的程式碼。</p>
+    <p><button data-copy="bm-export">複製「匯出」程式碼</button> <button data-copy="bm-import">複製「匯入」程式碼</button> <span id="copy-status" class="note"></span></p>
+  </section>
+</main>
+
+<script>
+  // Both functions run inside shysafari.com when the bookmark is clicked, so they must be self-contained.
+  function shySafariExport() {
+    if (!/(^|\.)shysafari\.com$/.test(location.hostname)) {
+      alert('請先打開 www.shysafari.com，再按這個書籤。');
+      return;
+    }
+    var data = {};
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      data[key] = localStorage.getItem(key);
+    }
+    var text = JSON.stringify({ app: 'shysafari', exportedAt: new Date().toISOString(), data: data });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    link.download = 'shysafari-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function () {});
+    alert('已匯出 ' + Object.keys(data).length + ' 項資料。\n備份檔已下載，內容也已複製到剪貼簿。');
+  }
+
+  function shySafariImport() {
+    if (!/(^|\.)shysafari\.com$/.test(location.hostname)) {
+      alert('請先打開 www.shysafari.com，再按這個書籤。');
+      return;
+    }
+    var old = document.getElementById('shysafari-import');
+    if (old) old.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'shysafari-import';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:16px/1.6 system-ui,sans-serif';
+    overlay.innerHTML =
+      '<div style="background:#fff;color:#222;border-radius:12px;padding:20px;width:min(480px,92vw)">' +
+      '<h2 style="margin:0 0 12px;font-size:20px">匯入 Shy Safari 紀錄</h2>' +
+      '<p style="margin:0 0 8px">選擇備份檔，或把匯出的文字貼在下面：</p>' +
+      '<input type="file" accept=".json,application/json" style="margin-bottom:8px;display:block">' +
+      '<textarea rows="6" style="width:100%;box-sizing:border-box;font:13px monospace"></textarea>' +
+      '<p style="margin:8px 0;color:#b42318;font-size:14px">注意：會覆蓋這台裝置目前的 Shy Safari 資料。</p>' +
+      '<div style="text-align:right"><button data-action="cancel" style="font:inherit;padding:6px 14px">取消</button> ' +
+      '<button data-action="ok" style="font:inherit;padding:6px 14px;background:#2e9b62;color:#fff;border:0;border-radius:6px">匯入</button></div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    var textarea = overlay.querySelector('textarea');
+    overlay.querySelector('input').onchange = function (e) {
+      var file = e.target.files[0];
+      if (file) file.text().then(function (t) { textarea.value = t; });
+    };
+    overlay.onclick = function (e) {
+      var action = e.target.getAttribute('data-action');
+      if (action === 'cancel' || e.target === overlay) { overlay.remove(); return; }
+      if (action !== 'ok') return;
+      var backup;
+      try { backup = JSON.parse(textarea.value); } catch (err) { alert('內容不是有效的備份，請確認整段都有貼上。'); return; }
+      if (!backup || backup.app !== 'shysafari' || typeof backup.data !== 'object') { alert('這不是 Shy Safari 的備份檔。'); return; }
+      if (!confirm('確定要匯入嗎？這台裝置目前的資料會被覆蓋。')) return;
+      Object.keys(backup.data).forEach(function (key) { localStorage.setItem(key, backup.data[key]); });
+      alert('匯入完成，頁面會重新整理。');
+      location.reload();
+    };
+  }
+
+  function toBookmarklet(fn) {
+    return 'javascript:' + encodeURIComponent('(' + fn.toString() + ')();void 0');
+  }
+
+  document.getElementById('bm-export').href = toBookmarklet(shySafariExport);
+  document.getElementById('bm-import').href = toBookmarklet(shySafariImport);
+
+  document.querySelectorAll('.bookmarklets a').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      alert('請把這個按鈕拖到書籤列，再到 Shy Safari 網站上按。');
+    });
+  });
+
+  document.querySelectorAll('[data-copy]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var href = document.getElementById(button.getAttribute('data-copy')).href;
+      var status = document.getElementById('copy-status');
+      navigator.clipboard.writeText(href).then(
+        function () { status.textContent = '已複製'; },
+        function () { status.textContent = '複製失敗，請改用電腦操作'; }
+      );
+    });
+  });
+</script>
+</body>
+</html>
