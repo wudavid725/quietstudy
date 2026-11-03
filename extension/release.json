@@ -1,14 +1,14 @@
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "files": {
-    "README.md": "8a66f5bb7219658a967356fd54207e90bff2aacf159c4ecfebe31d9667720dde",
+    "README.md": "1f2c73a16cb94c766f984ef7eacd4faa1541a7717feed029313cae1ba9e36a88",
     "background.js": "51aefaf7eb7bff3a0281b1657dbfcbad7bfd853aba5cc4af76648f62c08f3466",
-    "backup-store.js": "11f8ca823f26bd9d635ddd20b471cb5374c75642ca2ebd21fb6952b942541f65",
-    "backups.html": "9e367ae244ece41511a9b935d4532fb7208762deb94aa890469de86d5407ed27",
-    "backups.js": "31a3b0920d0a73c143f3b54c808062ef6613dc2959e6049a3c8da094bd67e80b",
-    "content.js": "35067e22d54bd552574f603314ee4a2beb09dd2a6064b02055a788b8c4d45891",
-    "manifest.json": "0ae6a345d4335f27087603b72b0739f0ddba992e7730fb294ba92d18f1704328",
-    "popup.html": "f1425bb8ab125529f60391d97d651874d2a9f1ade205b92ea61d968e9725c3be",
-    "popup.js": "8d441fcc7820f6d9de052eed62b2fba2f8459e9ce8a3874ff7d1cff9d4f52872"
+    "backup-store.js": "aa11440a589b9e159dc685222f53519708ca894718c3a85d8a14ba1247af35a1",
+    "backups.html": "ca17e6415193e863b3c36c738fed93acb46f8fa0376c8b20737e5cb2480ed239",
+    "backups.js": "568f929adcebe188d3f68fa1cd6ebcf2cc98ebb1f723cb7afea38969855785f7",
+    "content.js": "5e436a416a9b2315d974d25562d067257eecb31f6ceca283e81a6924540b7f50",
+    "manifest.json": "02aac7540de60ee812d95c981c9782f3b1a45c23978613757dbe8e1be8b7911b",
+    "popup.html": "c5c63ec65126ae04e357a60ddd8e71c475f343026cf14ce208dbb6a71af7170f",
+    "popup.js": "94d0b8a50e5d2768e5edb800ddc89fa9bc9c3e1f8fb0a66c60ac4edf06e7b46c"
   }
 }

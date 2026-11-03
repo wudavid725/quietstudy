@@ -1,7 +1,8 @@
-// Prepares a release of the extension for computers that load it from a synced folder.
+// Prepares a release of the extension. Computers pick it up through the launcher once
+// it is pushed to GitHub's main branch.
 //
-//   node tools/release.js                     update release.json only
-//   node tools/release.js "G:\我的雲端硬碟\shysafari-sync"   ...and copy the extension there
+//   node tools/release.js                update release.json
+//   node tools/release.js <folder>       ...and also copy the extension into <folder>
 //
 // release.json lists every file with its SHA-256 so installed copies only reload once
 // the whole release has synced. If files changed but the version didn't, the patch
