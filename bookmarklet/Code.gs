@@ -89,11 +89,20 @@ function addBackup(snapshot, reason) {
   if (sheet.getLastRow() - 1 > MAX_BACKUPS) sheet.deleteRows(MAX_BACKUPS + 2, sheet.getLastRow() - 1 - MAX_BACKUPS);
 }
 
-function listBackups() {
+// withData adds each backup's snapshot to the newest `limit` rows, so the bookmark can describe them.
+function listBackups(limit, withData) {
   const sheet = backupSheet();
   if (sheet.getLastRow() < 2) return [];
-  return sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues()
+  const count = sheet.getLastRow() - 1;
+  const rows = sheet.getRange(2, 1, count, 4).getValues()
     .map((row) => ({ id: String(row[3]), at: new Date(row[0]).getTime(), reason: row[1], sizeKb: row[2] }));
+  if (withData && limit > 0) {
+    const n = Math.min(limit, count);
+    sheet.getRange(2, 1, n, sheet.getLastColumn()).getValues().forEach((row, i) => {
+      rows[i].snapshot = fromCells(row.slice(4));
+    });
+  }
+  return rows;
 }
 
 function getBackup(id) {
@@ -141,7 +150,7 @@ function handle(request) {
       addBackup(request.snapshot, request.reason);
       return { ok: true };
     case 'list':
-      return { backups: listBackups() };
+      return { backups: listBackups(Number(request.limit) || 0, !!request.withData) };
     case 'getBackup':
       return { snapshot: getBackup(request.id) };
     default:
